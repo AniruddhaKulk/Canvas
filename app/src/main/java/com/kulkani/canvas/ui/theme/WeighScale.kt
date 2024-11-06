@@ -12,6 +12,7 @@ import androidx.compose.foundation.Canvas
 import android.graphics.Color
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.withRotation
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
@@ -80,15 +81,21 @@ fun WeighScale(
                         outerCircleRadius - lineLength.toPx() - 8.dp.toPx() - style.textSize.toPx()
                     val x = textDistance * cos(angleInRadiance) + circleCenter.x
                     val y = textDistance * sin(angleInRadiance) + circleCenter.y
-                    drawText(
-                        i.toString(),
-                        x,
-                        y,
-                        Paint().apply {
-                            textAlign = Paint.Align.CENTER
-                            textSize = style.textSize.toPx()
-                        }
-                    )
+                    withRotation(
+                        degrees = angleInRadiance * (180f / PI.toFloat()) + 90f,
+                        pivotX = x,
+                        pivotY = y
+                    ) {
+                        drawText(
+                            i.toString(),
+                            x,
+                            y,
+                            Paint().apply {
+                                textAlign = Paint.Align.CENTER
+                                textSize = style.textSize.toPx()
+                            }
+                        )
+                    }
                 }
             }
 
