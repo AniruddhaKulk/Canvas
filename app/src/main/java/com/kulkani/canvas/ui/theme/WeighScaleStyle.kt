@@ -7,8 +7,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 data class WeighScaleStyle(
-    val width: Dp = 100.dp,
-    val radius: Dp = 550.dp,
+    val width: Dp = 150.dp,
+    val radius: Dp = 500.dp,
     val textSize: TextUnit = 18.sp,
     val defaultLineColor: Color = Color.Gray,
     val minorLineColor: Color = Color.Green,

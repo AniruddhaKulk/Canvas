@@ -11,9 +11,13 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.foundation.Canvas
 import android.graphics.Color
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.unit.dp
+import kotlin.math.PI
+import kotlin.math.cos
+import kotlin.math.sin
 
 @Composable
-fun WeightScale(
+fun WeighScale(
     modifier: Modifier = Modifier,
     style: WeighScaleStyle = WeighScaleStyle(),
     minWeight: Int = 40,
@@ -29,7 +33,8 @@ fun WeightScale(
     Canvas(modifier = modifier) {
         center = this.center
         circleCenter = Offset(center.x, scaleWidth.toPx() / 2f + radius.toPx())
-
+        val innerCircleRadius = radius.toPx() - scaleWidth.toPx() / 2f
+        val outerCircleRadius = radius.toPx() + scaleWidth.toPx() / 2f
         drawContext.canvas.nativeCanvas.apply {
             drawCircle(
                 circleCenter.x,
@@ -41,6 +46,33 @@ fun WeightScale(
                     setStyle(Paint.Style.STROKE)
                     setShadowLayer(40f, 0f, 0f, Color.argb(50, 0, 0, 0))
                 }
+            )
+        }
+        for (i in minWeight..maxWeight) {
+            val angleInRadiance = (i - initialWeight - 90) * (PI / 180).toFloat()
+            val lineType = when {
+                i % 10 == 0 -> LineType.Major
+                i % 5 == 0 -> LineType.Minor
+                else -> LineType.Default
+            }
+            val (lineLength, lineColor) = when (lineType) {
+                LineType.Default -> style.defaultLineLength to style.defaultLineColor
+                LineType.Minor -> style.minorLineLength to style.minorLineColor
+                LineType.Major -> style.majorLineLength to style.majorLineColor
+            }
+            val lineStart = Offset(
+                x = circleCenter.x + (outerCircleRadius - lineLength.toPx()) * cos(angleInRadiance),
+                y = circleCenter.y + (outerCircleRadius - lineLength.toPx()) * sin(angleInRadiance)
+            )
+            val lineEnd = Offset(
+                x = circleCenter.x + outerCircleRadius * cos(angleInRadiance),
+                y = circleCenter.y + outerCircleRadius * sin(angleInRadiance)
+            )
+            drawLine(
+                color = lineColor,
+                strokeWidth = 1.dp.toPx(),
+                start = lineStart,
+                end = lineEnd
             )
         }
     }
