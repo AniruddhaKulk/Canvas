@@ -56,7 +56,10 @@ fun WeighScale(
                     circleCenter.x - change.position.x,
                     circleCenter.y - change.position.y
                 ) * (180 / PI.toFloat())
-                angle = cachedAngle + touchPositionAngle - dragStartAngle
+                angle = (cachedAngle + touchPositionAngle - dragStartAngle).coerceIn(
+                    minimumValue = initialWeight - maxWeight.toFloat(),
+                    maximumValue = initialWeight - minWeight.toFloat()
+                )
             }
         }) {
         center = this.center
@@ -77,7 +80,7 @@ fun WeighScale(
             )
         }
         for (i in minWeight..maxWeight) {
-            val angleInRadiance = (i - initialWeight + angle - 120) * (PI / 180).toFloat()
+            val angleInRadiance = (i - initialWeight + angle - 90) * (PI / 180).toFloat()
             val lineType = when {
                 i % 10 == 0 -> LineType.Major
                 i % 5 == 0 -> LineType.Minor
