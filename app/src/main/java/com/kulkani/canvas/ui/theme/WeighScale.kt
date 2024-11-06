@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.foundation.Canvas
 import android.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.withRotation
@@ -75,6 +76,7 @@ fun WeighScale(
                 start = lineStart,
                 end = lineEnd
             )
+
             drawContext.canvas.nativeCanvas.apply {
                 if (lineType is LineType.Major) {
                     val textDistance =
@@ -99,6 +101,20 @@ fun WeighScale(
                 }
             }
 
+            //Draw scale indicator
+            val middleTop = Offset(circleCenter.x, circleCenter.y - innerCircleRadius - style.scaleIndicatorLength.toPx())
+            val bottomLeft = Offset(circleCenter.x - 5f, circleCenter.y - innerCircleRadius)
+            val bottomRight = Offset(circleCenter.x + 5f, circleCenter.y - innerCircleRadius)
+            val indicator = Path().apply {
+                moveTo(middleTop.x, middleTop.y)
+                lineTo(bottomLeft.x, bottomLeft.y)
+                lineTo(bottomRight.x, bottomRight.y)
+                lineTo(middleTop.x, middleTop.y)
+            }
+            drawPath(
+                path = indicator,
+                color = style.scaleIndicatorColor,
+            )
         }
     }
 }
