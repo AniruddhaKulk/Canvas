@@ -43,7 +43,7 @@ fun WeighScale(
         .pointerInput(true) {
             detectDragGestures(
                 onDragStart = { offset ->
-                    dragStartAngle = atan2(
+                    dragStartAngle = -atan2(
                         circleCenter.x - offset.x,
                         circleCenter.y - offset.y
                     ) * (180 / PI.toFloat())
@@ -52,7 +52,7 @@ fun WeighScale(
                     cachedAngle = angle
                 }
             ) { change, _ ->
-                val touchPositionAngle = atan2(
+                val touchPositionAngle = -atan2(
                     circleCenter.x - change.position.x,
                     circleCenter.y - change.position.y
                 ) * (180 / PI.toFloat())
