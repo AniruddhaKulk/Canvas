@@ -20,6 +20,7 @@ import androidx.core.graphics.withRotation
 import kotlin.math.PI
 import kotlin.math.atan2
 import kotlin.math.cos
+import kotlin.math.roundToInt
 import kotlin.math.sin
 
 @Composable
@@ -60,6 +61,7 @@ fun WeighScale(
                     minimumValue = initialWeight - maxWeight.toFloat(),
                     maximumValue = initialWeight - minWeight.toFloat()
                 )
+                onWeightChange((initialWeight - angle).roundToInt())
             }
         }) {
         center = this.center
