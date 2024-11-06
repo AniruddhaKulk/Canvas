@@ -49,7 +49,7 @@ fun WeighScale(
             )
         }
         for (i in minWeight..maxWeight) {
-            val angleInRadiance = (i - initialWeight - 90) * (PI / 180).toFloat()
+            val angleInRadiance = (i - initialWeight - 120) * (PI / 180).toFloat()
             val lineType = when {
                 i % 10 == 0 -> LineType.Major
                 i % 5 == 0 -> LineType.Minor
@@ -74,6 +74,24 @@ fun WeighScale(
                 start = lineStart,
                 end = lineEnd
             )
+            drawContext.canvas.nativeCanvas.apply {
+                if (lineType is LineType.Major) {
+                    val textDistance =
+                        outerCircleRadius - lineLength.toPx() - 8.dp.toPx() - style.textSize.toPx()
+                    val x = textDistance * cos(angleInRadiance) + circleCenter.x
+                    val y = textDistance * sin(angleInRadiance) + circleCenter.y
+                    drawText(
+                        i.toString(),
+                        x,
+                        y,
+                        Paint().apply {
+                            textAlign = Paint.Align.CENTER
+                            textSize = style.textSize.toPx()
+                        }
+                    )
+                }
+            }
+
         }
     }
 }

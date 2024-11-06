@@ -30,7 +30,7 @@ class MainActivity : ComponentActivity() {
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(300.dp)
-                                .align(Alignment.Center)
+                                .align(Alignment.Center),
                         ) {
 
                         }
