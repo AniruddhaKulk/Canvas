@@ -10,11 +10,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.foundation.Canvas
 import android.graphics.Color
+import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.withRotation
 import kotlin.math.PI
+import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -32,7 +36,29 @@ fun WeighScale(
     //Center of coordinate system
     var center by remember { mutableStateOf(Offset.Zero) }
     var circleCenter by remember { mutableStateOf(Offset.Zero) }
-    Canvas(modifier = modifier) {
+    var angle by remember { mutableFloatStateOf(0f) }
+    var dragStartAngle by remember { mutableFloatStateOf(0f) }
+    var cachedAngle by remember { mutableFloatStateOf(0f) }
+    Canvas(modifier = modifier
+        .pointerInput(true) {
+            detectDragGestures(
+                onDragStart = { offset ->
+                    dragStartAngle = atan2(
+                        circleCenter.x - offset.x,
+                        circleCenter.y - offset.y
+                    ) * (180 / PI.toFloat())
+                },
+                onDragEnd = {
+                    cachedAngle = angle
+                }
+            ) { change, _ ->
+                val touchPositionAngle = atan2(
+                    circleCenter.x - change.position.x,
+                    circleCenter.y - change.position.y
+                ) * (180 / PI.toFloat())
+                angle = cachedAngle + touchPositionAngle - dragStartAngle
+            }
+        }) {
         center = this.center
         circleCenter = Offset(center.x, scaleWidth.toPx() / 2f + radius.toPx())
         val innerCircleRadius = radius.toPx() - scaleWidth.toPx() / 2f
@@ -51,7 +77,7 @@ fun WeighScale(
             )
         }
         for (i in minWeight..maxWeight) {
-            val angleInRadiance = (i - initialWeight - 120) * (PI / 180).toFloat()
+            val angleInRadiance = (i - initialWeight + angle - 120) * (PI / 180).toFloat()
             val lineType = when {
                 i % 10 == 0 -> LineType.Major
                 i % 5 == 0 -> LineType.Minor
